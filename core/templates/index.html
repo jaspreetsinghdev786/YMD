@@ -1,0 +1,311 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>YMD - Minimalist Video Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+</head>
+
+<body class="bg-background-light text-black font-display overflow-x-hidden flex flex-col min-h-screen">
+    <header class="w-full border-b-[3px] border-black bg-white sticky top-0 z-50">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-3">
+                    <a class="text-2xl font-black tracking-tighter uppercase hover:text-primary transition-colors"
+                        href="{% url 'index' %}">YMD</a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <a href="{% url 'login' %}">
+                        <button
+                            class="hidden sm:flex h-10 px-6 items-center justify-center text-sm font-bold border-2 border-black bg-white hover:bg-black hover:text-white transition-all uppercase tracking-wider">
+                            Login
+                        </button>
+                    </a>
+                    <a href="{% url 'register' %}">
+                        <button
+                            class="flex h-10 px-6 items-center justify-center text-sm font-bold border-2 border-black bg-primary text-white hover:bg-black hover:text-white hover:border-black transition-all uppercase tracking-wider shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
+                            Register
+                        </button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main
+        class="flex-grow flex flex-col justify-center items-center px-4 py-16 sm:px-6 lg:px-8 w-full max-w-[1440px] mx-auto relative">
+        <div class="w-full max-w-4xl flex flex-col items-center text-center gap-8 z-10">
+            <div class="space-y-4">
+                <h1
+                    class="text-5xl sm:text-6xl md:text-7xl font-black leading-[0.9] tracking-tighter uppercase break-words">
+                    Download YouTube Videos Without The <span
+                        class="text-primary underline decoration-4 underline-offset-4 decoration-black">Nonsense</span>
+                </h1>
+                <p
+                    class="text-lg sm:text-xl md:text-2xl font-medium text-gray-800 max-w-2xl mx-auto border-l-4 border-primary pl-4 text-left sm:text-center sm:border-l-0 sm:pl-0 sm:border-b-4 sm:pb-2 sm:inline-block">
+                    No ads. No redirects. Just the raw file.
+                </p>
+            </div>
+            <div class="w-full mt-8">
+                <div
+                    class="flex flex-col sm:flex-row gap-0 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+                    <input id="url-input"
+                        class="w-full h-16 sm:h-20 px-6 text-lg sm:text-2xl font-bold border-[3px] border-black border-b-0 sm:border-b-[3px] sm:border-r-0 placeholder:text-gray-400 focus:ring-0 focus:border-black bg-white uppercase"
+                        placeholder="PASTE URL HERE..." type="url" />
+                    <button id="download-btn"
+                        class="h-16 sm:h-20 px-8 sm:px-12 bg-primary border-[3px] border-black flex items-center justify-center group hover:bg-black transition-colors">
+                        <span
+                            class="material-symbols-outlined text-white text-4xl group-hover:scale-110 transition-transform">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6 mt-4 w-full">
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input checked="" class="brutalist-checkbox text-black focus:ring-0 cursor-pointer" name="format"
+                        type="radio" />
+                    <span
+                        class="text-lg font-bold uppercase border-b-2 border-transparent group-hover:border-black transition-colors">Video</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input class="brutalist-checkbox text-black focus:ring-0 cursor-pointer" name="format"
+                        type="radio" />
+                    <span
+                        class="text-lg font-bold uppercase border-b-2 border-transparent group-hover:border-black transition-colors">Playlist</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input class="brutalist-checkbox text-black focus:ring-0 cursor-pointer" name="format"
+                        type="radio" />
+                    <span
+                        class="text-lg font-bold uppercase border-b-2 border-transparent group-hover:border-black transition-colors">Audio
+                        Only</span>
+                </label>
+            </div>
+        </div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full opacity-5 pointer-events-none z-0"
+            style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 24px 24px;"></div>
+    </main>
+    <footer class="w-full bg-black text-white border-t-[3px] border-black mt-auto">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div
+                    class="flex flex-col gap-2 p-4 border border-zinc-800 hover:border-primary transition-colors group">
+                    <span
+                        class="text-primary text-6xl font-black leading-none opacity-50 group-hover:opacity-100 transition-opacity">01</span>
+                    <h3 class="text-3xl font-bold tracking-tight">FAST</h3>
+                    <p class="text-gray-400 font-normal leading-relaxed text-sm">Optimized servers ensure you get your
+                        files at maximum bandwidth speed. No throttling.</p>
+                </div>
+                <div
+                    class="flex flex-col gap-2 p-4 border border-zinc-800 hover:border-primary transition-colors group">
+                    <span
+                        class="text-primary text-6xl font-black leading-none opacity-50 group-hover:opacity-100 transition-opacity">02</span>
+                    <h3 class="text-3xl font-bold tracking-tight">SIMPLE</h3>
+                    <p class="text-gray-400 font-normal leading-relaxed text-sm">No complex settings. Paste the link,
+                        click download. That's it.</p>
+                </div>
+                <div
+                    class="flex flex-col gap-2 p-4 border border-zinc-800 hover:border-primary transition-colors group">
+                    <span
+                        class="text-primary text-6xl font-black leading-none opacity-50 group-hover:opacity-100 transition-opacity">03</span>
+                    <h3 class="text-3xl font-bold tracking-tight">RELIABLE</h3>
+                    <p class="text-gray-400 font-normal leading-relaxed text-sm">Supports 4K, playlists, and diverse
+                        formats. If it's on YouTube, we can grab it.</p>
+                </div>
+            </div>
+            <div
+                class="mt-16 pt-8 border-t border-zinc-800 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm font-mono">
+                <p>© 2023 YMD Media Downloader.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a class="hover:text-white underline decoration-zinc-700 underline-offset-4" href="#">Terms</a>
+                    <a class="hover:text-white underline decoration-zinc-700 underline-offset-4" href="#">Privacy</a>
+                    <a class="hover:text-white underline decoration-zinc-700 underline-offset-4" href="#">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+<script>
+    // Global variable to store CSRF token
+    let csrfToken = null;
+
+    // Function to get CSRF token from backend
+    async function fetchCSRFToken() {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/accounts/csrf-token/', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            const data = await response.json();
+            csrfToken = data.csrfToken;
+            return csrfToken;
+        } catch (error) {
+            console.error('Failed to fetch CSRF token:', error);
+            return null;
+        }
+    }
+
+    // Function to refresh access token
+    async function refreshAccessToken() {
+        try {
+            console.log('Attempting to refresh access token...');
+            const response = await fetch('http://127.0.0.1:8000/api/accounts/refresh/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken || ''
+                },
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                console.log('Token refresh successful');
+                return true;
+            } else {
+                console.error('Token refresh failed with status:', response.status);
+                const errorData = await response.json().catch(() => ({}));
+                console.error('Refresh error details:', errorData);
+                return false;
+            }
+        } catch (error) {
+            console.error('Token refresh network error:', error);
+            return false;
+        }
+    }
+
+    // Function to check authentication status via API with token refresh
+    async function checkAuthStatus() {
+        try {
+            const response = await fetch('http://127.0.0.1:8000/api/accounts/auth/status/', {
+                method: 'GET',
+                credentials: 'include'
+            });
+
+            if (response.status === 401) {
+                // Try to refresh token
+                console.log('Access token expired, attempting refresh...');
+                const refreshed = await refreshAccessToken();
+                if (refreshed) {
+                    // Retry auth check
+                    console.log('Retrying auth status check...');
+                    const retryResponse = await fetch('http://127.0.0.1:8000/api/accounts/auth/status/', {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+                    if (retryResponse.ok) {
+                        const data = await retryResponse.json();
+                        return { authenticated: true, user: data.user };
+                    } else {
+                        console.error('Auth check retry failed with status:', retryResponse.status);
+                    }
+                }
+                return { authenticated: false, status: 401 };
+            }
+
+            if (response.status === 403) {
+                console.log('Access forbidden (403)');
+                return { authenticated: false, status: 403 };
+            }
+
+            if (response.ok) {
+                const data = await response.json();
+                return { authenticated: true, user: data.user };
+            }
+
+            console.error('Auth check failed with status:', response.status);
+            return { authenticated: false, status: response.status };
+        } catch (error) {
+            console.error('Auth status check network error:', error);
+            return { authenticated: false, error: error.message };
+        }
+    }
+
+    // Function to handle URL validation and redirection
+    async function handleDownload() {
+        const urlInput = document.getElementById('url-input');
+        const videoUrl = urlInput.value.trim();
+
+        if (!videoUrl) {
+            alert('Please paste a URL first.');
+            return;
+        }
+
+        // Get selected format
+        const selectedFormat = document.querySelector('input[name="format"]:checked').nextElementSibling.textContent.trim().toLowerCase().replace(' ', '-');
+
+        // Check auth status first
+        const authStatus = await checkAuthStatus();
+        if (!authStatus.authenticated) {
+            console.log('User not authenticated. Redirecting to login...');
+            sessionStorage.setItem('redirectUrl', window.location.pathname);
+            window.location.href = '/login/';
+            return;
+        }
+
+        // Ensure we have CSRF token
+        if (!csrfToken) {
+            await fetchCSRFToken();
+        }
+
+        try {
+            // Call validation API
+            const response = await fetch('http://127.0.0.1:8000/api/youtube/validate/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken || ''
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    url: videoUrl,
+                    format: selectedFormat
+                })
+            });
+
+            if (response.status === 200) {
+                const data = await response.json();
+                // Store results in sessionStorage for use on downloads page
+                sessionStorage.setItem('youtubeData', JSON.stringify(data));
+                sessionStorage.setItem('videoUrl', videoUrl);
+                sessionStorage.setItem('selectedFormat', selectedFormat);
+                // Redirect to downloads page
+                window.location.href = 'http://127.0.0.1:8000/downloads/';
+            } else if (response.status === 401 || response.status === 403) {
+                // Unauthorized/Forbidden - redirect to login
+                console.log(`Access denied (${response.status}). Redirecting to login...`);
+                sessionStorage.setItem('redirectUrl', window.location.pathname);
+                window.location.href = '/login/';
+            } else {
+                // Handle other errors
+                const errorData = await response.json().catch(() => ({}));
+                alert(`Error: ${errorData.message || 'Validation failed. Please try again.'}`);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Network error. Please check your connection and try again.');
+        }
+    }
+
+    // Add click event listener to download button
+    document.getElementById('download-btn').addEventListener('click', handleDownload);
+
+    // Check auth status on page load
+    checkAuthStatus().then(authStatus => {
+        if (!authStatus.authenticated) {
+            console.log('User not authenticated on page load.');
+        } else {
+            console.log('User authenticated:', authStatus.user);
+        }
+    });
+
+    // Fetch CSRF token on page load
+    fetchCSRFToken();
+</script>
+
+</html>

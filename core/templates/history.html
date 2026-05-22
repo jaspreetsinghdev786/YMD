@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>YMD History - Download History</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet">
+
+    <!-- Tailwind CSS (local build) -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-neutral-900 dark:text-neutral-50 transition-colors duration-200 min-h-screen flex flex-col">
+
+    <!-- Top Navigation -->
+    <header
+        class="sticky top-0 z-50 w-full bg-background-light dark:bg-background-dark border-b-2 border-black dark:border-white">
+        <div class="px-6 md:px-10 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a class="text-2xl font-black tracking-tighter uppercase hover:text-primary transition-colors"
+                    href="{% url 'downloads' %}">
+                    YMD
+                </a>
+            </div>
+
+            <div class="flex items-center gap-4 md:gap-8">
+                <nav class="hidden md:flex items-center gap-6">
+                    <a class="text-sm font-bold uppercase hover:underline decoration-2 underline-offset-4 text-primary"
+                        href="{% url 'history' %}">
+                        History
+                    </a>
+
+                </nav>
+
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 px-3 py-1.5 border-2 border-black dark:border-white bg-transparent hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors rounded-sm">
+                        <span class="text-xs font-bold uppercase tracking-wider">User</span>
+                        <span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+                    </button>
+
+                    <div
+                        class="absolute right-0 top-full mt-1 w-32 border-2 border-black dark:border-white bg-background-light dark:bg-background-dark hidden group-hover:block shadow-brutal dark:shadow-brutal-dark">
+                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white border-b-2 border-black dark:border-white"
+                            href="{% url 'profile' %}">
+                            Profile
+                        </a>
+                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white"
+                            href="#" id="logout-btn">
+                            Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col py-10 px-4 md:px-6 w-full max-w-6xl mx-auto">
+
+        <!-- Page Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-3">Download History</h1>
+            <p class="text-neutral-500 dark:text-neutral-400 font-medium text-lg">View and manage your downloaded
+                content</p>
+        </div>
+
+        <!-- Filters & Stats Bar -->
+        <section class="w-full mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Total Downloads -->
+            <div
+                class="brutal-border dark:border-white bg-surface-light dark:bg-surface-dark p-6 shadow-brutal-sm dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p
+                            class="text-xs uppercase font-bold tracking-wider text-neutral-500 dark:text-neutral-400 mb-1">
+                            Total Downloads
+                        </p>
+                        <p class="text-3xl font-black" data-stat="total-downloads">0</p>
+                    </div>
+                    <span class="material-symbols-outlined text-5xl text-primary">download</span>
+                </div>
+            </div>
+
+            <!-- This Month -->
+            <div
+                class="brutal-border dark:border-white bg-surface-light dark:bg-surface-dark p-6 shadow-brutal-sm dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p
+                            class="text-xs uppercase font-bold tracking-wider text-neutral-500 dark:text-neutral-400 mb-1">
+                            This Month
+                        </p>
+                        <p class="text-3xl font-black" data-stat="downloads-month">0</p>
+                    </div>
+                    <span class="material-symbols-outlined text-5xl text-primary">calendar_month</span>
+                </div>
+            </div>
+
+            <!-- Storage Used -->
+            <div
+                class="brutal-border dark:border-white bg-surface-light dark:bg-surface-dark p-6 shadow-brutal-sm dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p
+                            class="text-xs uppercase font-bold tracking-wider text-neutral-500 dark:text-neutral-400 mb-1">
+                            Storage Used
+                        </p>
+                        <p class="text-3xl font-black" data-stat="storage-used">0B</p>
+                    </div>
+                    <span class="material-symbols-outlined text-5xl text-primary">storage</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter Controls -->
+        <section class="w-full mb-6 brutal-border dark:border-white bg-surface-light dark:bg-surface-dark p-4">
+            <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+                <div class="flex flex-wrap gap-3">
+                    <button data-filter="all"
+                        class="px-4 py-2 brutal-border dark:border-white bg-black dark:bg-white text-white dark:text-black font-bold text-xs uppercase tracking-wide hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-colors shadow-brutal-sm">
+                        All
+                    </button>
+                    <button data-filter="videos"
+                        class="px-4 py-2 brutal-border dark:border-white bg-transparent font-bold text-xs uppercase tracking-wide hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors shadow-brutal-sm dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
+                        Videos
+                    </button>
+                    <button data-filter="audio"
+                        class="px-4 py-2 brutal-border dark:border-white bg-transparent font-bold text-xs uppercase tracking-wide hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors shadow-brutal-sm dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
+                        Audio
+                    </button>
+                    <button data-filter="completed"
+                        class="px-4 py-2 brutal-border dark:border-white bg-transparent font-bold text-xs uppercase tracking-wide hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors shadow-brutal-sm dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
+                        Completed
+                    </button>
+                </div>
+
+                <div class="flex gap-3">
+                    <button data-action="refresh"
+                        class="px-4 py-2 brutal-border dark:border-white bg-transparent font-bold text-xs uppercase tracking-wide hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors shadow-brutal-sm dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
+                        <span class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">refresh</span>
+                            Refresh
+                        </span>
+                    </button>
+
+                    <button data-action="clear-history"
+                        class="px-4 py-2 brutal-border dark:border-white bg-primary text-white font-bold text-xs uppercase tracking-wide hover:bg-black dark:hover:bg-white dark:hover:text-black transition-colors shadow-brutal-sm">
+                        <span class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-sm">delete_sweep</span>
+                            Clear History
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- History List -->
+        <section class="w-full space-y-4" data-downloads-list>
+            <!-- Initial loading state -->
+            <div class="text-center py-12">
+                <div
+                    class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-primary border-t-transparent">
+                </div>
+                <p class="text-sm font-bold mt-4 text-neutral-500 dark:text-neutral-400">Loading downloads...</p>
+            </div>
+        </section>
+
+        <!-- Pagination -->
+        <div data-pagination></div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="border-t-2 border-black dark:border-white py-6 bg-background-light dark:bg-background-dark text-center">
+        <p class="text-xs uppercase font-bold text-neutral-500">YMD Downloader v2.0 © 2025</p>
+    </footer>
+
+    <!-- Dark mode toggle script -->
+    <script>
+        const html = document.documentElement;
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.classList.remove('light', 'dark');
+        html.classList.add(currentTheme);
+
+        function toggleDarkMode() {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                html.classList.add('light');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.remove('light');
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+    </script>
+
+    <!-- Logout handler -->
+    <script>
+        document.getElementById('logout-btn')?.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+                await fetch('/api/accounts/logout/', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                window.location.href = '/login/';
+            } catch (error) {
+                console.error('Logout failed:', error);
+                window.location.href = '/login/';
+            }
+        });
+    </script>
+
+    <!-- Include the main JavaScript file -->
+    <script src="{% static 'js/history.js' %}"></script>
+
+</body>
+
+</html>

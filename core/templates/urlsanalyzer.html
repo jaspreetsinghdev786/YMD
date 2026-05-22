@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>YMD - Minimalist Video Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+</head>
+
+<body class="bg-background-light text-black font-display overflow-x-hidden flex flex-col min-h-screen">
+    <header
+        class="sticky top-0 z-50 w-full bg-background-light dark:bg-background-dark border-b-2 border-black dark:border-white">
+        <div class="px-6 md:px-10 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <a class="text-2xl font-black tracking-tighter uppercase hover:text-primary transition-colors" href="#">
+                    YMD
+                </a>
+            </div>
+            <!-- Navigation & User -->
+            <div class="flex items-center gap-4 md:gap-8">
+                <nav class="hidden md:flex items-center gap-6">
+                    <a class="text-sm font-bold uppercase hover:underline decoration-2 underline-offset-4"
+                        href="{% url 'history' %}">History</a>
+
+                </nav>
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 px-3 py-1.5 border-2 border-black dark:border-white bg-transparent hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors rounded-sm">
+                        <span class="text-xs font-bold uppercase tracking-wider">User</span>
+                        <span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+                    </button>
+                    <!-- Dropdown Content (Mock) -->
+                    <div
+                        class="absolute right-0 top-full mt-1 w-32 border-2 border-black dark:border-white bg-background-light dark:bg-background-dark hidden group-hover:block shadow-brutal dark:shadow-brutal-dark">
+                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white border-b-2 border-black dark:border-white"
+                            href="{% url 'profile' %}">Profile</a>
+                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white"
+                            href="{% url 'index' %}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- Main Content Area -->
+    <main
+        class="flex-grow flex flex-col justify-center items-center px-4 py-16 sm:px-6 lg:px-8 w-full max-w-[1440px] mx-auto relative">
+        <!-- Hero Section -->
+        <div class="w-full max-w-4xl flex flex-col items-center text-center gap-8 z-10">
+            <!-- Headlines -->
+            <div class="space-y-4">
+                <h1
+                    class="text-5xl sm:text-6xl md:text-7xl font-black leading-[0.9] tracking-tighter uppercase break-words">
+                    Download YouTube Videos Without The <span
+                        class="text-primary underline decoration-4 underline-offset-4 decoration-black">Nonsense</span>
+                </h1>
+                <p
+                    class="text-lg sm:text-xl md:text-2xl font-medium text-gray-800 max-w-2xl mx-auto border-l-4 border-primary pl-4 text-left sm:text-center sm:border-l-0 sm:pl-0 sm:border-b-4 sm:pb-2 sm:inline-block">
+                    No ads. No redirects. Just the raw file.
+                </p>
+            </div>
+            <!-- Input Area -->
+            <div class="w-full mt-8">
+                <div
+                    class="flex flex-col sm:flex-row gap-0 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+                    <input
+                        class="w-full h-16 sm:h-20 px-6 text-lg sm:text-2xl font-bold border-[3px] border-black border-b-0 sm:border-b-[3px] sm:border-r-0 placeholder:text-gray-400 focus:ring-0 focus:border-black bg-white uppercase"
+                        placeholder="PASTE URL HERE..." type="url" />
+                    <button
+                        class="h-16 sm:h-20 px-8 sm:px-12 bg-primary border-[3px] border-black flex items-center justify-center group hover:bg-black transition-colors">
+                        <span
+                            class="material-symbols-outlined text-white text-4xl group-hover:scale-110 transition-transform">arrow_forward</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Format Selectors (Chips) -->
+            <div class="flex flex-wrap justify-center gap-6 mt-4 w-full">
+                <!-- Video Option -->
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input checked="" class="brutalist-checkbox text-black focus:ring-0 cursor-pointer" name="format"
+                        type="radio" />
+                    <span
+                        class="text-lg font-bold uppercase border-b-2 border-transparent group-hover:border-black transition-colors">Video</span>
+                </label>
+                <!-- Playlist Option -->
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input class="brutalist-checkbox text-black focus:ring-0 cursor-pointer" name="format"
+                        type="radio" />
+                    <span
+                        class="text-lg font-bold uppercase border-b-2 border-transparent group-hover:border-black transition-colors">Playlist</span>
+                </label>
+                <!-- Audio Only Option -->
+                <label class="flex items-center gap-3 cursor-pointer group">
+                    <input class="brutalist-checkbox text-black focus:ring-0 cursor-pointer" name="format"
+                        type="radio" />
+                    <span
+                        class="text-lg font-bold uppercase border-b-2 border-transparent group-hover:border-black transition-colors">Audio
+                        Only</span>
+                </label>
+            </div>
+        </div>
+        <!-- Decorative background element -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full opacity-5 pointer-events-none z-0"
+            style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 24px 24px;">
+        </div>
+    </main>
+    <!-- Feature Section / Footer -->
+    <footer class="w-full bg-black text-white border-t-[3px] border-black mt-auto">
+        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <!-- Feature 1 -->
+                <div
+                    class="flex flex-col gap-2 p-4 border border-zinc-800 hover:border-primary transition-colors group">
+                    <span
+                        class="text-primary text-6xl font-black leading-none opacity-50 group-hover:opacity-100 transition-opacity">01</span>
+                    <h3 class="text-3xl font-bold tracking-tight">FAST</h3>
+                    <p class="text-gray-400 font-normal leading-relaxed text-sm">
+                        Optimized servers ensure you get your files at maximum bandwidth speed. No throttling.
+                    </p>
+                </div>
+                <!-- Feature 2 -->
+                <div
+                    class="flex flex-col gap-2 p-4 border border-zinc-800 hover:border-primary transition-colors group">
+                    <span
+                        class="text-primary text-6xl font-black leading-none opacity-50 group-hover:opacity-100 transition-opacity">02</span>
+                    <h3 class="text-3xl font-bold tracking-tight">SIMPLE</h3>
+                    <p class="text-gray-400 font-normal leading-relaxed text-sm">
+                        No complex settings. Paste the link, click download. That's it.
+                    </p>
+                </div>
+                <!-- Feature 3 -->
+                <div
+                    class="flex flex-col gap-2 p-4 border border-zinc-800 hover:border-primary transition-colors group">
+                    <span
+                        class="text-primary text-6xl font-black leading-none opacity-50 group-hover:opacity-100 transition-opacity">03</span>
+                    <h3 class="text-3xl font-bold tracking-tight">RELIABLE</h3>
+                    <p class="text-gray-400 font-normal leading-relaxed text-sm">
+                        Supports 4K, playlists, and diverse formats. If it's on YouTube, we can grab it.
+                    </p>
+                </div>
+            </div>
+            <div
+                class="mt-16 pt-8 border-t border-zinc-800 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm font-mono">
+                <p>© 2023 YMD Media Downloader.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <a class="hover:text-white underline decoration-zinc-700 underline-offset-4" href="#">Terms</a>
+                    <a class="hover:text-white underline decoration-zinc-700 underline-offset-4" href="#">Privacy</a>
+                    <a class="hover:text-white underline decoration-zinc-700 underline-offset-4" href="#">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

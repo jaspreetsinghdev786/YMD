@@ -1,0 +1,246 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>YMD Downloader Interface</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS (local build) -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark font-display text-neutral-900 dark:text-neutral-50 transition-colors duration-200 min-h-screen flex flex-col">
+
+    <!-- Top Navigation -->
+    <header
+        class="sticky top-0 z-50 w-full bg-background-light dark:bg-background-dark border-b-2 border-black dark:border-white">
+        <div class="px-6 md:px-10 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <a class="text-2xl font-black tracking-tighter uppercase hover:text-primary transition-colors"
+                    href="{% url 'downloads' %}">
+                    YMD
+                </a>
+            </div>
+            <!-- Navigation & User -->
+            <div class="flex items-center gap-4 md:gap-8">
+                <nav class="hidden md:flex items-center gap-6">
+                    <a class="text-sm font-bold uppercase hover:underline decoration-2 underline-offset-4"
+                        href="{% url 'history' %}">History</a>
+
+                </nav>
+                <div class="relative group">
+                    <button
+                        class="flex items-center gap-2 px-3 py-1.5 border-2 border-black dark:border-white bg-transparent hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors rounded-sm">
+                        <span class="text-xs font-bold uppercase tracking-wider">User</span>
+                        <span class="material-symbols-outlined text-lg">arrow_drop_down</span>
+                    </button>
+                    <!-- Dropdown Content -->
+                    <div
+                        class="absolute right-0 top-full mt-1 w-32 border-2 border-black dark:border-white bg-background-light dark:bg-background-dark hidden group-hover:block shadow-brutal dark:shadow-brutal-dark">
+                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white border-b-2 border-black dark:border-white"
+                            href="{% url 'profile' %}">Profile</a>
+                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white"
+                            id="downloads-logout-btn" href="#">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col items-center py-10 px-4 md:px-6 w-full max-w-5xl mx-auto">
+
+        <!-- Input Section -->
+        <section class="w-full mb-12">
+            <div
+                class="flex flex-col md:flex-row gap-0 w-full brutal-border dark:border-white bg-white dark:bg-surface-dark shadow-brutal dark:shadow-brutal-dark">
+                <input id="url-input"
+                    class="w-full md:w-[70%] h-14 md:h-16 px-6 bg-transparent border-none text-base md:text-lg placeholder:text-neutral-500 focus:ring-0 focus:bg-neutral-100 dark:focus:bg-neutral-800 transition-colors"
+                    placeholder="Paste YouTube URL here..." type="text" />
+                <button id="analyze-btn"
+                    class="w-full md:w-[30%] h-14 md:h-16 bg-primary text-white font-black text-lg tracking-wide uppercase hover:bg-black dark:hover:bg-white dark:hover:text-black transition-colors flex items-center justify-center gap-2 border-t-2 md:border-t-0 md:border-l-2 border-black dark:border-white disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="analyze-icon" class="material-symbols-outlined">search</span>
+                    <span id="analyze-text">Analyze</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Preview & Format Card + Queue -->
+        <section class="w-full grid md:grid-cols-12 gap-8 mb-16">
+
+            <!-- Left: Media Preview Card -->
+            <div
+                class="md:col-span-8 flex flex-col gap-0 w-full brutal-border dark:border-white bg-surface-light dark:bg-surface-dark p-0">
+                <!-- Header of Card -->
+                <div
+                    class="border-b-2 border-black dark:border-white p-4 bg-neutral-100 dark:bg-neutral-800 flex justify-between items-center">
+                    <h2 class="font-bold uppercase text-sm tracking-wider">Media Preview</h2>
+                    <span class="material-symbols-outlined text-neutral-500">smart_display</span>
+                </div>
+
+                <!-- Empty State (shown by default) -->
+                <div id="empty-state" class="p-8 flex flex-col items-center justify-center text-center min-h-[300px]">
+                    <div
+                        class="w-24 h-24 mb-6 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
+                        <span class="material-symbols-outlined text-5xl text-neutral-400">video_library</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 text-neutral-700 dark:text-neutral-300">No Video Selected</h3>
+                    <p class="text-neutral-500 dark:text-neutral-400 max-w-xs">Paste a YouTube URL above and click
+                        <strong>Analyze</strong> to preview video details</p>
+                </div>
+
+                <!-- Loading State (hidden by default) -->
+                <div id="loading-state"
+                    class="hidden p-8 flex flex-col items-center justify-center text-center min-h-[300px]">
+                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent mb-6">
+                    </div>
+                    <h3 class="text-lg font-bold text-neutral-700 dark:text-neutral-300">Analyzing Video...</h3>
+                    <p class="text-sm text-neutral-500 dark:text-neutral-400">Fetching metadata from YouTube</p>
+                </div>
+
+                <!-- Video Content (hidden by default, shown after analyze) -->
+                <div id="video-content" class="hidden p-6">
+                    <div class="flex flex-col sm:flex-row gap-6">
+                        <!-- Thumbnail -->
+                        <div class="shrink-0">
+                            <div
+                                class="w-[150px] h-[85px] brutal-border dark:border-white relative overflow-hidden group">
+                                <img id="video-thumbnail" alt="Video Thumbnail" class="w-full h-full object-cover"
+                                    src="" />
+                                <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Info -->
+                        <div class="flex flex-col gap-1 w-full">
+                            <h3 id="video-title" class="text-xl font-bold leading-tight line-clamp-2">Video Title</h3>
+                            <div
+                                class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-neutral-500 dark:text-neutral-400 font-medium">
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[16px]">schedule</span>
+                                    <span id="video-duration">0:00</span>
+                                </span>
+                                <span class="w-1 h-1 bg-neutral-400 rounded-full"></span>
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[16px]">account_circle</span>
+                                    <span id="video-channel">Channel</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Divider -->
+                    <div class="h-0.5 bg-neutral-200 dark:bg-neutral-700 my-6"></div>
+
+                    <!-- Formats -->
+                    <div class="flex flex-col gap-4">
+                        <label
+                            class="font-bold uppercase text-xs tracking-wider text-neutral-500 dark:text-neutral-400 mb-2">Select
+                            Format</label>
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input checked="" class="text-primary focus:ring-primary" name="format" type="radio"
+                                    value="1080p" />
+                                <span class="flex-1 font-medium group-hover:translate-x-1 transition-transform">MP4
+                                    1080p <span id="size-1080p"
+                                        class="text-neutral-500 dark:text-neutral-400 ml-2 font-normal">(~150MB)</span></span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input class="text-primary focus:ring-primary" name="format" type="radio"
+                                    value="720p" />
+                                <span class="flex-1 font-medium group-hover:translate-x-1 transition-transform">MP4 720p
+                                    <span id="size-720p"
+                                        class="text-neutral-500 dark:text-neutral-400 ml-2 font-normal">(~85MB)</span></span>
+                            </label>
+                            <label class="flex items-center gap-3 cursor-pointer group">
+                                <input class="text-primary focus:ring-primary" name="format" type="radio" value="mp3" />
+                                <span class="flex-1 font-medium group-hover:translate-x-1 transition-transform">MP3
+                                    320kbps <span id="size-mp3"
+                                        class="text-neutral-500 dark:text-neutral-400 ml-2 font-normal">(~12MB)</span></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
+                        <button id="download-btn"
+                            class="h-14 brutal-border dark:border-white bg-black dark:bg-white text-white dark:text-black font-bold text-lg uppercase tracking-wide hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white hover:border-black dark:hover:border-white transition-all shadow-brutal-sm dark:shadow-none hover:shadow-none active:translate-y-[2px] active:translate-x-[2px]">
+                            Download
+                        </button>
+                        <button id="queue-btn"
+                            class="h-14 brutal-border dark:border-white bg-transparent text-current font-bold text-lg uppercase tracking-wide hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all shadow-brutal-sm dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] hover:shadow-none active:translate-y-[2px] active:translate-x-[2px]">
+                            Queue
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Queue Panel (DYNAMIC) -->
+            <div class="md:col-span-4 flex flex-col w-full h-full">
+                <div
+                    class="brutal-border dark:border-white bg-surface-light dark:bg-surface-dark flex-grow flex flex-col">
+                    <!-- Queue Header -->
+                    <div
+                        class="bg-black text-white p-4 border-b-2 border-black dark:border-white dark:bg-white dark:text-black">
+                        <h2 class="font-black uppercase text-lg tracking-tighter flex items-center justify-between">
+                            Queue
+                            <span id="queue-count-badge"
+                                class="bg-primary text-white text-xs px-2 py-0.5 rounded-sm font-bold"
+                                style="display: none;">0</span>
+                        </h2>
+                    </div>
+
+                    <!-- Queue Items Container (POPULATED BY JS) -->
+                    <div id="queue-container" class="p-4 flex flex-col gap-4 overflow-y-auto max-h-[500px]">
+                        <!-- Loading State -->
+                        <div class="flex items-center justify-center py-12">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer
+        class="border-t-2 border-black dark:border-white py-6 bg-background-light dark:bg-background-dark text-center">
+        <p class="text-xs uppercase font-bold text-neutral-500">YMD Downloader v2.0 © 2024</p>
+    </footer>
+
+    <!-- Load Queue Manager Script -->
+    <script src="{% static 'js/queue-manager.js' %}"></script>
+    <script src="{% static 'js/youtube-downloader.js' %}"></script>
+    <script src="{% static 'js/toast-notifications.js' %}"></script>
+
+    <!-- Logout handler -->
+    <script>
+        document.getElementById('downloads-logout-btn')?.addEventListener('click', async function (e) {
+            e.preventDefault();
+            try {
+                await fetch('/api/accounts/logout/', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                window.location.href = '/login/';
+            } catch (error) {
+                console.error('Logout failed:', error);
+                window.location.href = '/login/';
+            }
+        });
+    </script>
+</body>
+
+</html>

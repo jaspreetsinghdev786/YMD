@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom Utilities for Brutalism */
+.brutal-border {
+    border: 2px solid #000;
+}
+
+.dark .brutal-border {
+    border-color: #fff;
+}
+
+.brutal-shadow:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px 0px currentColor;
+}
+
+.brutal-shadow:active {
+    transform: translate(0px, 0px);
+    box-shadow: 0px 0px 0px 0px currentColor;
+}
+
+/* Brutalist Border (register page) */
+.brutalist-border {
+    border: 2px solid #000000;
+}
+
+/* Brutalist Input Focus (register page) */
+.brutalist-input:focus {
+    outline: none;
+    box-shadow: 4px 4px 0px 0px #ff0000;
+    border-color: #000000;
+}
+
+/* Radio Button Custom Styling */
+input[type="radio"]:checked+div {
+    font-weight: 700;
+}
+
+input[type="radio"] {
+    appearance: none;
+    background-color: transparent;
+    margin: 0;
+    color: currentColor;
+    width: 1.25em;
+    height: 1.25em;
+    border: 2px solid currentColor;
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+}
+
+input[type="radio"]::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em currentColor;
+}
+
+input[type="radio"]:checked::before {
+    transform: scale(1);
+}
+
+/* Brutalist Checkbox */
+.brutalist-checkbox {
+    appearance: none;
+    background-color: transparent;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 1.25em;
+    height: 1.25em;
+    border: 2px solid currentColor;
+    display: grid;
+    place-content: center;
+}
+
+.brutalist-checkbox::before {
+    content: "";
+    width: 0.75em;
+    height: 0.75em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em black;
+}
+
+.brutalist-checkbox:checked::before {
+    transform: scale(1);
+}
+
+/* Focus States */
+input:focus,
+button:focus {
+    outline: 2px solid #ff0000;
+    outline-offset: 2px;
+}
