@@ -1,166 +1,154 @@
 {% load static %}
 <!DOCTYPE html>
-
-<html class="light" lang="en">
-
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>YMD - Minimalist Video Downloader</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YDM — URL Analyzer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'css/output.css' %}"/>
+  <style>
+    :root{--bg:#0d0d0d;--bg-card:#161616;--bg-raised:#1e1e1e;--border:#2a2a2a;--border-hi:#3a3a3a;--red:#e5190e;--red-dim:rgba(229,25,14,.1);--text:#f0f0f0;--text-2:#8a8a8a;--text-3:#444;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{-webkit-font-smoothing:antialiased;}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
+    a{color:inherit;text-decoration:none;}
+
+    /* NAV */
+    .nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;background:rgba(13,13,13,.92);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);}
+    .nav-logo{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:700;letter-spacing:-.02em;}
+    .nav-logo .icon{width:20px;height:20px;background:var(--red);clip-path:polygon(15% 0%,100% 50%,15% 100%);}
+    .nav-right{display:flex;align-items:center;gap:4px;}
+    .nav-link{padding:6px 12px;border-radius:7px;font-size:13px;font-weight:500;color:var(--text-2);transition:color .15s,background .15s;}
+    .nav-link:hover{color:var(--text);background:var(--bg-raised);}
+    .user-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:7px;background:var(--bg-raised);border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;color:var(--text);position:relative;}
+    .user-btn:hover{border-color:var(--border-hi);}
+    .user-btn .material-symbols-outlined{font-size:16px;color:var(--text-2);}
+    .dropdown{position:absolute;right:0;top:calc(100% + 6px);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:140px;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;}
+    .user-btn:hover .dropdown,.user-btn:focus-within .dropdown{display:block;}
+    .dropdown a{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;font-size:13px;color:var(--text-2);transition:all .15s;}
+    .dropdown a:hover{background:var(--bg-raised);color:var(--text);}
+    .dropdown-divider{height:1px;background:var(--border);margin:4px 0;}
+
+    /* HERO */
+    .hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 24px 100px;text-align:center;position:relative;overflow:hidden;}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(229,25,14,.06),transparent 70%);pointer-events:none;}
+    .hero-title{font-size:clamp(38px,6vw,72px);font-weight:700;letter-spacing:-.04em;line-height:1.05;max-width:700px;margin-bottom:16px;}
+    .hero-title .accent{color:var(--red);}
+    .hero-sub{font-size:16px;color:var(--text-2);max-width:420px;line-height:1.6;margin-bottom:48px;}
+
+    /* URL INPUT */
+    .url-form{width:100%;max-width:600px;display:flex;flex-direction:column;gap:16px;}
+    .url-box{display:flex;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,box-shadow .2s;}
+    .url-box:focus-within{border-color:rgba(229,25,14,.5);box-shadow:0 0 0 3px rgba(229,25,14,.08);}
+    .url-icon{display:flex;align-items:center;padding:0 16px;color:var(--text-3);}
+    .url-input{flex:1;background:transparent;border:none;outline:none;padding:16px 0;font-family:var(--font);font-size:14px;color:var(--text);}
+    .url-input::placeholder{color:var(--text-3);}
+    .url-submit{padding:10px 20px;margin:6px;border-radius:8px;background:var(--red);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+    .url-submit:hover{background:#c9140a;}
+    .url-submit .material-symbols-outlined{color:#fff;font-size:20px;}
+
+    /* FORMAT CHIPS */
+    .format-chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+    .chip-label{display:flex;align-items:center;gap:7px;padding:7px 16px;border-radius:8px;border:1px solid var(--border);background:var(--bg-card);font-size:13px;font-weight:500;color:var(--text-2);cursor:pointer;transition:all .15s;}
+    .chip-label:has(input:checked){border-color:var(--red);background:var(--red-dim);color:var(--text);}
+    .chip-label input{display:none;}
+    .chip-label .material-symbols-outlined{font-size:16px;}
+
+    /* FEATURES FOOTER */
+    .features{background:var(--bg-card);border-top:1px solid var(--border);padding:56px 28px;}
+    .features-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+    .feature{background:var(--bg-card);padding:28px 24px;transition:background .15s;}
+    .feature:hover{background:var(--bg-raised);}
+    .feature-num{font-family:var(--mono);font-size:11px;color:var(--red);letter-spacing:.08em;margin-bottom:8px;}
+    .feature-title{font-size:15px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px;}
+    .feature-desc{font-size:13px;color:var(--text-2);line-height:1.6;}
+
+    .footer{padding:20px 28px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--text-3);font-family:var(--mono);}
+    .footer-links{display:flex;gap:20px;}
+    .footer-links a:hover{color:var(--text-2);}
+  </style>
 </head>
+<body>
 
-<body class="bg-background-light text-black font-display overflow-x-hidden flex flex-col min-h-screen">
-    <header
-        class="sticky top-0 z-50 w-full bg-background-light dark:bg-background-dark border-b-2 border-black dark:border-white">
-        <div class="px-6 md:px-10 h-16 flex items-center justify-between">
-            <!-- Logo -->
-            <div class="flex items-center gap-3">
-                <a class="text-2xl font-black tracking-tighter uppercase hover:text-primary transition-colors" href="#">
-                    YMD
-                </a>
-            </div>
-            <!-- Navigation & User -->
-            <div class="flex items-center gap-4 md:gap-8">
-                <nav class="hidden md:flex items-center gap-6">
-                    <a class="text-sm font-bold uppercase hover:underline decoration-2 underline-offset-4"
-                        href="{% url 'history' %}">History</a>
+<nav class="nav">
+  <a href="#" class="nav-logo">
+    <div class="icon"></div>YDM
+  </a>
+  <div class="nav-right">
+    <a href="{% url 'history' %}" class="nav-link">History</a>
+    <div class="user-btn" tabindex="0">
+      <span class="material-symbols-outlined">person</span>
+      <span>User</span>
+      <span class="material-symbols-outlined">expand_more</span>
+      <div class="dropdown">
+        <a href="{% url 'profile' %}"><span class="material-symbols-outlined" style="font-size:15px;">manage_accounts</span>Profile</a>
+        <div class="dropdown-divider"></div>
+        <a href="{% url 'index' %}"><span class="material-symbols-outlined" style="font-size:15px;">logout</span>Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
 
-                </nav>
-                <div class="relative group">
-                    <button
-                        class="flex items-center gap-2 px-3 py-1.5 border-2 border-black dark:border-white bg-transparent hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors rounded-sm">
-                        <span class="text-xs font-bold uppercase tracking-wider">User</span>
-                        <span class="material-symbols-outlined text-lg">arrow_drop_down</span>
-                    </button>
-                    <!-- Dropdown Content (Mock) -->
-                    <div
-                        class="absolute right-0 top-full mt-1 w-32 border-2 border-black dark:border-white bg-background-light dark:bg-background-dark hidden group-hover:block shadow-brutal dark:shadow-brutal-dark">
-                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white border-b-2 border-black dark:border-white"
-                            href="{% url 'profile' %}">Profile</a>
-                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white"
-                            href="{% url 'index' %}">Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header>
-    <!-- Main Content Area -->
-    <main
-        class="flex-grow flex flex-col justify-center items-center px-4 py-16 sm:px-6 lg:px-8 w-full max-w-[1440px] mx-auto relative">
-        <!-- Hero Section -->
-        <div class="w-full max-w-4xl flex flex-col items-center text-center gap-8 z-10">
-            <!-- Headlines -->
-            <div class="space-y-4">
-                <h1
-                    class="text-5xl sm:text-6xl md:text-7xl font-black leading-[0.9] tracking-tighter uppercase break-words">
-                    Download YouTube Videos Without The <span
-                        class="text-primary underline decoration-4 underline-offset-4 decoration-black">Nonsense</span>
-                </h1>
-                <p
-                    class="text-lg sm:text-xl md:text-2xl font-medium text-gray-800 max-w-2xl mx-auto border-l-4 border-primary pl-4 text-left sm:text-center sm:border-l-0 sm:pl-0 sm:border-b-4 sm:pb-2 sm:inline-block">
-                    No ads. No redirects. Just the raw file.
-                </p>
-            </div>
-            <!-- Input Area -->
-            <div class="w-full mt-8">
-                <div
-                    class="flex flex-col sm:flex-row gap-0 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-transform hover:-translate-y-1 hover:shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
-                    <input
-                        class="w-full h-16 sm:h-20 px-6 text-lg sm:text-2xl font-bold border-[3px] border-black border-b-0 sm:border-b-[3px] sm:border-r-0 placeholder:text-gray-400 focus:ring-0 focus:border-black bg-white uppercase"
-                        placeholder="PASTE URL HERE..." type="url" />
-                    <button
-                        class="h-16 sm:h-20 px-8 sm:px-12 bg-primary border-[3px] border-black flex items-center justify-center group hover:bg-black transition-colors">
-                        <span
-                            class="material-symbols-outlined text-white text-4xl group-hover:scale-110 transition-transform">arrow_forward</span>
-                    </button>
-                </div>
-            </div>
-            <!-- Format Selectors (Chips) -->
-            <div class="flex flex-wrap justify-center gap-6 mt-4 w-full">
-                <!-- Video Option -->
-                <label class="flex items-center gap-3 cursor-pointer group">
-                    <input checked="" class="brutalist-checkbox text-black focus:ring-0 cursor-pointer" name="format"
-                        type="radio" />
-                    <span
-                        class="text-lg font-bold uppercase border-b-2 border-transparent group-hover:border-black transition-colors">Video</span>
-                </label>
-                <!-- Playlist Option -->
-                <label class="flex items-center gap-3 cursor-pointer group">
-                    <input class="brutalist-checkbox text-black focus:ring-0 cursor-pointer" name="format"
-                        type="radio" />
-                    <span
-                        class="text-lg font-bold uppercase border-b-2 border-transparent group-hover:border-black transition-colors">Playlist</span>
-                </label>
-                <!-- Audio Only Option -->
-                <label class="flex items-center gap-3 cursor-pointer group">
-                    <input class="brutalist-checkbox text-black focus:ring-0 cursor-pointer" name="format"
-                        type="radio" />
-                    <span
-                        class="text-lg font-bold uppercase border-b-2 border-transparent group-hover:border-black transition-colors">Audio
-                        Only</span>
-                </label>
-            </div>
-        </div>
-        <!-- Decorative background element -->
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full opacity-5 pointer-events-none z-0"
-            style="background-image: radial-gradient(#000 1px, transparent 1px); background-size: 24px 24px;">
-        </div>
-    </main>
-    <!-- Feature Section / Footer -->
-    <footer class="w-full bg-black text-white border-t-[3px] border-black mt-auto">
-        <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <!-- Feature 1 -->
-                <div
-                    class="flex flex-col gap-2 p-4 border border-zinc-800 hover:border-primary transition-colors group">
-                    <span
-                        class="text-primary text-6xl font-black leading-none opacity-50 group-hover:opacity-100 transition-opacity">01</span>
-                    <h3 class="text-3xl font-bold tracking-tight">FAST</h3>
-                    <p class="text-gray-400 font-normal leading-relaxed text-sm">
-                        Optimized servers ensure you get your files at maximum bandwidth speed. No throttling.
-                    </p>
-                </div>
-                <!-- Feature 2 -->
-                <div
-                    class="flex flex-col gap-2 p-4 border border-zinc-800 hover:border-primary transition-colors group">
-                    <span
-                        class="text-primary text-6xl font-black leading-none opacity-50 group-hover:opacity-100 transition-opacity">02</span>
-                    <h3 class="text-3xl font-bold tracking-tight">SIMPLE</h3>
-                    <p class="text-gray-400 font-normal leading-relaxed text-sm">
-                        No complex settings. Paste the link, click download. That's it.
-                    </p>
-                </div>
-                <!-- Feature 3 -->
-                <div
-                    class="flex flex-col gap-2 p-4 border border-zinc-800 hover:border-primary transition-colors group">
-                    <span
-                        class="text-primary text-6xl font-black leading-none opacity-50 group-hover:opacity-100 transition-opacity">03</span>
-                    <h3 class="text-3xl font-bold tracking-tight">RELIABLE</h3>
-                    <p class="text-gray-400 font-normal leading-relaxed text-sm">
-                        Supports 4K, playlists, and diverse formats. If it's on YouTube, we can grab it.
-                    </p>
-                </div>
-            </div>
-            <div
-                class="mt-16 pt-8 border-t border-zinc-800 flex flex-col md:flex-row justify-between items-center text-gray-500 text-sm font-mono">
-                <p>© 2023 YMD Media Downloader.</p>
-                <div class="flex gap-6 mt-4 md:mt-0">
-                    <a class="hover:text-white underline decoration-zinc-700 underline-offset-4" href="#">Terms</a>
-                    <a class="hover:text-white underline decoration-zinc-700 underline-offset-4" href="#">Privacy</a>
-                    <a class="hover:text-white underline decoration-zinc-700 underline-offset-4" href="#">Contact</a>
-                </div>
-            </div>
-        </div>
-    </footer>
+<main class="hero">
+  <h1 class="hero-title">Download YouTube<br>without the <span class="accent">noise.</span></h1>
+  <p class="hero-sub">No ads. No redirects. Just the raw file.</p>
+
+  <div class="url-form">
+    <div class="url-box">
+      <div class="url-icon"><span class="material-symbols-outlined" style="font-size:18px;">link</span></div>
+      <input class="url-input" type="url" placeholder="Paste URL here…"/>
+      <button class="url-submit">
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </button>
+    </div>
+    <div class="format-chips">
+      <label class="chip-label">
+        <input type="radio" name="format" value="video" checked/>
+        <span class="material-symbols-outlined">videocam</span>Video
+      </label>
+      <label class="chip-label">
+        <input type="radio" name="format" value="playlist"/>
+        <span class="material-symbols-outlined">queue_music</span>Playlist
+      </label>
+      <label class="chip-label">
+        <input type="radio" name="format" value="audio-only"/>
+        <span class="material-symbols-outlined">headphones</span>Audio only
+      </label>
+    </div>
+  </div>
+</main>
+
+<section class="features">
+  <div class="features-inner">
+    <div class="feature">
+      <p class="feature-num">01 — FAST</p>
+      <h3 class="feature-title">Maximum speed</h3>
+      <p class="feature-desc">Optimized servers deliver files at full bandwidth. No throttling.</p>
+    </div>
+    <div class="feature">
+      <p class="feature-num">02 — SIMPLE</p>
+      <h3 class="feature-title">Zero friction</h3>
+      <p class="feature-desc">Paste the link. Click download. That's it.</p>
+    </div>
+    <div class="feature">
+      <p class="feature-num">03 — RELIABLE</p>
+      <h3 class="feature-title">Any format</h3>
+      <p class="feature-desc">4K, playlists, MP3, MP4. If it's on YouTube, we can grab it.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <span>© 2025 YDM Media Downloader</span>
+  <div class="footer-links">
+    <a href="#">Terms</a>
+    <a href="#">Privacy</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
 </body>
-
 </html>

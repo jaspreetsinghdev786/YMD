@@ -1,246 +1,239 @@
 {% load static %}
 <!DOCTYPE html>
-<html class="light" lang="en">
-
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>YMD Downloader Interface</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
-    <!-- Tailwind CSS (local build) -->
-    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YDM — Downloader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'css/output.css' %}"/>
+  <style>
+    :root{--bg:#0d0d0d;--bg-card:#161616;--bg-raised:#1e1e1e;--border:#2a2a2a;--border-hi:#3a3a3a;--red:#e5190e;--red-dim:rgba(229,25,14,.1);--text:#f0f0f0;--text-2:#8a8a8a;--text-3:#444;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{-webkit-font-smoothing:antialiased;}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;}
+    a{color:inherit;text-decoration:none;}
+
+    /* NAV */
+    .nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;background:rgba(13,13,13,.92);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);}
+    .nav-logo{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:700;letter-spacing:-.02em;}
+    .nav-logo .icon{width:20px;height:20px;background:var(--red);clip-path:polygon(15% 0%,100% 50%,15% 100%);}
+    .nav-right{display:flex;align-items:center;gap:4px;}
+    .nav-link{padding:6px 12px;border-radius:7px;font-size:13px;font-weight:500;color:var(--text-2);transition:color .15s,background .15s;}
+    .nav-link:hover{color:var(--text);background:var(--bg-raised);}
+    .user-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:7px;background:var(--bg-raised);border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;color:var(--text);position:relative;}
+    .user-btn:hover{border-color:var(--border-hi);}
+    .user-btn .material-symbols-outlined{font-size:16px;color:var(--text-2);}
+    .dropdown{position:absolute;right:0;top:calc(100% + 6px);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:140px;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;}
+    .user-btn:hover .dropdown,.user-btn:focus-within .dropdown{display:block;}
+    .dropdown a{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;font-size:13px;color:var(--text-2);transition:all .15s;}
+    .dropdown a:hover{background:var(--bg-raised);color:var(--text);}
+    .dropdown-divider{height:1px;background:var(--border);margin:4px 0;}
+
+    /* MAIN */
+    .main{flex:1;padding:28px;max-width:1100px;width:100%;margin:0 auto;}
+
+    /* URL INPUT */
+    .url-box{display:flex;background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px;transition:border-color .2s,box-shadow .2s;}
+    .url-box:focus-within{border-color:rgba(229,25,14,.4);box-shadow:0 0 0 3px rgba(229,25,14,.06);}
+    .url-icon{display:flex;align-items:center;padding:0 16px;color:var(--text-3);}
+    .url-icon .material-symbols-outlined{font-size:18px;}
+    #url-input{flex:1;background:transparent;border:none;outline:none;padding:15px 0;font-family:var(--font);font-size:14px;color:var(--text);}
+    #url-input::placeholder{color:var(--text-3);}
+    #analyze-btn{display:flex;align-items:center;gap:8px;padding:10px 22px;margin:6px;border-radius:8px;background:var(--red);border:none;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:600;color:#fff;transition:background .15s;white-space:nowrap;}
+    #analyze-btn:hover{background:#c9140a;}
+    #analyze-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+    /* GRID */
+    .grid{display:grid;grid-template-columns:1fr 320px;gap:20px;}
+    @media(max-width:800px){.grid{grid-template-columns:1fr;}}
+
+    /* CARD */
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+    .card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .card-head-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);}
+    .card-body{padding:20px;}
+
+    /* EMPTY / LOADING */
+    .empty-state,.loading-state{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:64px 24px;gap:12px;}
+    .empty-icon{width:64px;height:64px;background:var(--bg-raised);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:4px;}
+    .empty-icon .material-symbols-outlined{font-size:28px;color:var(--text-3);}
+    .empty-title{font-size:15px;font-weight:600;}
+    .empty-desc{font-size:13px;color:var(--text-2);max-width:260px;line-height:1.5;}
+    .spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+
+    /* VIDEO CONTENT */
+    .video-preview{display:flex;gap:16px;margin-bottom:20px;}
+    .thumb-wrap{width:140px;height:80px;border-radius:8px;overflow:hidden;flex-shrink:0;background:var(--bg-raised);}
+    .thumb-wrap img{width:100%;height:100%;object-fit:cover;}
+    .video-info{flex:1;min-width:0;}
+    .video-title{font-size:15px;font-weight:600;line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+    .video-meta{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-2);}
+    .video-meta .material-symbols-outlined{font-size:14px;}
+
+    .formats-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:12px;}
+    .format-option{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg-raised);cursor:pointer;margin-bottom:8px;transition:border-color .15s,background .15s;}
+    .format-option:has(input:checked){border-color:var(--red);background:var(--red-dim);}
+    .format-option input{accent-color:var(--red);}
+    .format-option .format-name{font-size:14px;font-weight:500;flex:1;}
+    .format-option .format-size{font-size:12px;color:var(--text-2);}
+
+    .action-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;}
+    .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;letter-spacing:-.01em;}
+    .btn-primary{background:var(--red);color:#fff;}
+    .btn-primary:hover{background:#c9140a;}
+    .btn-secondary{background:var(--bg-raised);color:var(--text);border:1px solid var(--border);}
+    .btn-secondary:hover{border-color:var(--border-hi);background:#252525;}
+
+    /* QUEUE */
+    .queue-head{padding:14px 18px;background:var(--bg-raised);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .queue-title{font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;}
+    .queue-badge{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:100px;display:none;}
+    #queue-container{padding:12px;max-height:460px;overflow-y:auto;}
+    .queue-empty{padding:40px 16px;text-align:center;font-size:13px;color:var(--text-3);}
+
+    /* FOOTER */
+    .footer{padding:18px 28px;border-top:1px solid var(--border);font-size:11px;color:var(--text-3);font-family:var(--mono);text-align:center;}
+  </style>
 </head>
+<body>
 
-<body
-    class="bg-background-light dark:bg-background-dark font-display text-neutral-900 dark:text-neutral-50 transition-colors duration-200 min-h-screen flex flex-col">
+<nav class="nav">
+  <a href="{% url 'downloads' %}" class="nav-logo">
+    <div class="icon"></div>YDM
+  </a>
+  <div class="nav-right">
+    <a href="{% url 'history' %}" class="nav-link">History</a>
+    <div class="user-btn" tabindex="0">
+      <span class="material-symbols-outlined">person</span>
+      <span id="user-label">User</span>
+      <span class="material-symbols-outlined">expand_more</span>
+      <div class="dropdown">
+        <a href="{% url 'profile' %}"><span class="material-symbols-outlined" style="font-size:15px;">manage_accounts</span>Profile</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" id="downloads-logout-btn"><span class="material-symbols-outlined" style="font-size:15px;">logout</span>Sign out</a>
+      </div>
+    </div>
+  </div>
+</nav>
 
-    <!-- Top Navigation -->
-    <header
-        class="sticky top-0 z-50 w-full bg-background-light dark:bg-background-dark border-b-2 border-black dark:border-white">
-        <div class="px-6 md:px-10 h-16 flex items-center justify-between">
-            <!-- Logo -->
-            <div class="flex items-center gap-3">
-                <a class="text-2xl font-black tracking-tighter uppercase hover:text-primary transition-colors"
-                    href="{% url 'downloads' %}">
-                    YMD
-                </a>
-            </div>
-            <!-- Navigation & User -->
-            <div class="flex items-center gap-4 md:gap-8">
-                <nav class="hidden md:flex items-center gap-6">
-                    <a class="text-sm font-bold uppercase hover:underline decoration-2 underline-offset-4"
-                        href="{% url 'history' %}">History</a>
+<main class="main">
+  <!-- URL Input -->
+  <div class="url-box">
+    <div class="url-icon"><span class="material-symbols-outlined">link</span></div>
+    <input id="url-input" type="text" placeholder="Paste a YouTube URL…"/>
+    <button id="analyze-btn">
+      <span class="material-symbols-outlined" id="analyze-icon">search</span>
+      <span id="analyze-text">Analyze</span>
+    </button>
+  </div>
 
-                </nav>
-                <div class="relative group">
-                    <button
-                        class="flex items-center gap-2 px-3 py-1.5 border-2 border-black dark:border-white bg-transparent hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors rounded-sm">
-                        <span class="text-xs font-bold uppercase tracking-wider">User</span>
-                        <span class="material-symbols-outlined text-lg">arrow_drop_down</span>
-                    </button>
-                    <!-- Dropdown Content -->
-                    <div
-                        class="absolute right-0 top-full mt-1 w-32 border-2 border-black dark:border-white bg-background-light dark:bg-background-dark hidden group-hover:block shadow-brutal dark:shadow-brutal-dark">
-                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white border-b-2 border-black dark:border-white"
-                            href="{% url 'profile' %}">Profile</a>
-                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white"
-                            id="downloads-logout-btn" href="#">Logout</a>
-                    </div>
-                </div>
-            </div>
+  <div class="grid">
+    <!-- Media Preview -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-head-label">Media preview</span>
+        <span class="material-symbols-outlined" style="font-size:18px;color:var(--text-3);">smart_display</span>
+      </div>
+
+      <!-- Empty -->
+      <div id="empty-state">
+        <div class="empty-state">
+          <div class="empty-icon"><span class="material-symbols-outlined">video_library</span></div>
+          <p class="empty-title">No video selected</p>
+          <p class="empty-desc">Paste a YouTube URL above and click <strong>Analyze</strong> to preview details</p>
         </div>
-    </header>
+      </div>
 
-    <!-- Main Content -->
-    <main class="flex-grow flex flex-col items-center py-10 px-4 md:px-6 w-full max-w-5xl mx-auto">
+      <!-- Loading -->
+      <div id="loading-state" style="display:none;">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <p style="font-size:14px;font-weight:600;">Analyzing video…</p>
+          <p style="font-size:12px;color:var(--text-2);">Fetching metadata from YouTube</p>
+        </div>
+      </div>
 
-        <!-- Input Section -->
-        <section class="w-full mb-12">
-            <div
-                class="flex flex-col md:flex-row gap-0 w-full brutal-border dark:border-white bg-white dark:bg-surface-dark shadow-brutal dark:shadow-brutal-dark">
-                <input id="url-input"
-                    class="w-full md:w-[70%] h-14 md:h-16 px-6 bg-transparent border-none text-base md:text-lg placeholder:text-neutral-500 focus:ring-0 focus:bg-neutral-100 dark:focus:bg-neutral-800 transition-colors"
-                    placeholder="Paste YouTube URL here..." type="text" />
-                <button id="analyze-btn"
-                    class="w-full md:w-[30%] h-14 md:h-16 bg-primary text-white font-black text-lg tracking-wide uppercase hover:bg-black dark:hover:bg-white dark:hover:text-black transition-colors flex items-center justify-center gap-2 border-t-2 md:border-t-0 md:border-l-2 border-black dark:border-white disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span id="analyze-icon" class="material-symbols-outlined">search</span>
-                    <span id="analyze-text">Analyze</span>
-                </button>
+      <!-- Content -->
+      <div id="video-content" style="display:none;" class="card-body">
+        <div class="video-preview">
+          <div class="thumb-wrap">
+            <img id="video-thumbnail" src="" alt="Thumbnail"/>
+          </div>
+          <div class="video-info">
+            <p class="video-title" id="video-title">Video Title</p>
+            <div class="video-meta">
+              <span class="material-symbols-outlined">schedule</span>
+              <span id="video-duration">0:00</span>
+              <span style="opacity:.3;">·</span>
+              <span class="material-symbols-outlined">person</span>
+              <span id="video-channel">Channel</span>
             </div>
-        </section>
+          </div>
+        </div>
 
-        <!-- Preview & Format Card + Queue -->
-        <section class="w-full grid md:grid-cols-12 gap-8 mb-16">
+        <div style="height:1px;background:var(--border);margin-bottom:18px;"></div>
 
-            <!-- Left: Media Preview Card -->
-            <div
-                class="md:col-span-8 flex flex-col gap-0 w-full brutal-border dark:border-white bg-surface-light dark:bg-surface-dark p-0">
-                <!-- Header of Card -->
-                <div
-                    class="border-b-2 border-black dark:border-white p-4 bg-neutral-100 dark:bg-neutral-800 flex justify-between items-center">
-                    <h2 class="font-bold uppercase text-sm tracking-wider">Media Preview</h2>
-                    <span class="material-symbols-outlined text-neutral-500">smart_display</span>
-                </div>
+        <p class="formats-label">Select format</p>
+        <label class="format-option">
+          <input type="radio" name="format" value="1080p" checked/>
+          <span class="format-name">MP4 1080p</span>
+          <span class="format-size" id="size-1080p">~150 MB</span>
+        </label>
+        <label class="format-option">
+          <input type="radio" name="format" value="720p"/>
+          <span class="format-name">MP4 720p</span>
+          <span class="format-size" id="size-720p">~85 MB</span>
+        </label>
+        <label class="format-option">
+          <input type="radio" name="format" value="mp3"/>
+          <span class="format-name">MP3 320kbps</span>
+          <span class="format-size" id="size-mp3">~12 MB</span>
+        </label>
 
-                <!-- Empty State (shown by default) -->
-                <div id="empty-state" class="p-8 flex flex-col items-center justify-center text-center min-h-[300px]">
-                    <div
-                        class="w-24 h-24 mb-6 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-800">
-                        <span class="material-symbols-outlined text-5xl text-neutral-400">video_library</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-neutral-700 dark:text-neutral-300">No Video Selected</h3>
-                    <p class="text-neutral-500 dark:text-neutral-400 max-w-xs">Paste a YouTube URL above and click
-                        <strong>Analyze</strong> to preview video details</p>
-                </div>
+        <div class="action-row">
+          <button class="btn btn-primary" id="download-btn">
+            <span class="material-symbols-outlined" style="font-size:17px;">download</span>
+            Download
+          </button>
+          <button class="btn btn-secondary" id="queue-btn">
+            <span class="material-symbols-outlined" style="font-size:17px;">add_to_queue</span>
+            Add to queue
+          </button>
+        </div>
+      </div>
+    </div>
 
-                <!-- Loading State (hidden by default) -->
-                <div id="loading-state"
-                    class="hidden p-8 flex flex-col items-center justify-center text-center min-h-[300px]">
-                    <div class="animate-spin rounded-full h-16 w-16 border-4 border-primary border-t-transparent mb-6">
-                    </div>
-                    <h3 class="text-lg font-bold text-neutral-700 dark:text-neutral-300">Analyzing Video...</h3>
-                    <p class="text-sm text-neutral-500 dark:text-neutral-400">Fetching metadata from YouTube</p>
-                </div>
+    <!-- Queue -->
+    <div class="card" style="display:flex;flex-direction:column;">
+      <div class="queue-head">
+        <span class="queue-title">
+          Queue
+          <span class="queue-badge" id="queue-count-badge">0</span>
+        </span>
+      </div>
+      <div id="queue-container">
+        <div class="queue-empty">Your queue is empty</div>
+      </div>
+    </div>
+  </div>
+</main>
 
-                <!-- Video Content (hidden by default, shown after analyze) -->
-                <div id="video-content" class="hidden p-6">
-                    <div class="flex flex-col sm:flex-row gap-6">
-                        <!-- Thumbnail -->
-                        <div class="shrink-0">
-                            <div
-                                class="w-[150px] h-[85px] brutal-border dark:border-white relative overflow-hidden group">
-                                <img id="video-thumbnail" alt="Video Thumbnail" class="w-full h-full object-cover"
-                                    src="" />
-                                <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-all">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Info -->
-                        <div class="flex flex-col gap-1 w-full">
-                            <h3 id="video-title" class="text-xl font-bold leading-tight line-clamp-2">Video Title</h3>
-                            <div
-                                class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-neutral-500 dark:text-neutral-400 font-medium">
-                                <span class="flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[16px]">schedule</span>
-                                    <span id="video-duration">0:00</span>
-                                </span>
-                                <span class="w-1 h-1 bg-neutral-400 rounded-full"></span>
-                                <span class="flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[16px]">account_circle</span>
-                                    <span id="video-channel">Channel</span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
+<footer class="footer">YDM Downloader v2.0 © 2025</footer>
 
-                    <!-- Divider -->
-                    <div class="h-0.5 bg-neutral-200 dark:bg-neutral-700 my-6"></div>
-
-                    <!-- Formats -->
-                    <div class="flex flex-col gap-4">
-                        <label
-                            class="font-bold uppercase text-xs tracking-wider text-neutral-500 dark:text-neutral-400 mb-2">Select
-                            Format</label>
-                        <div class="space-y-3">
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input checked="" class="text-primary focus:ring-primary" name="format" type="radio"
-                                    value="1080p" />
-                                <span class="flex-1 font-medium group-hover:translate-x-1 transition-transform">MP4
-                                    1080p <span id="size-1080p"
-                                        class="text-neutral-500 dark:text-neutral-400 ml-2 font-normal">(~150MB)</span></span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input class="text-primary focus:ring-primary" name="format" type="radio"
-                                    value="720p" />
-                                <span class="flex-1 font-medium group-hover:translate-x-1 transition-transform">MP4 720p
-                                    <span id="size-720p"
-                                        class="text-neutral-500 dark:text-neutral-400 ml-2 font-normal">(~85MB)</span></span>
-                            </label>
-                            <label class="flex items-center gap-3 cursor-pointer group">
-                                <input class="text-primary focus:ring-primary" name="format" type="radio" value="mp3" />
-                                <span class="flex-1 font-medium group-hover:translate-x-1 transition-transform">MP3
-                                    320kbps <span id="size-mp3"
-                                        class="text-neutral-500 dark:text-neutral-400 ml-2 font-normal">(~12MB)</span></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                        <button id="download-btn"
-                            class="h-14 brutal-border dark:border-white bg-black dark:bg-white text-white dark:text-black font-bold text-lg uppercase tracking-wide hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white hover:border-black dark:hover:border-white transition-all shadow-brutal-sm dark:shadow-none hover:shadow-none active:translate-y-[2px] active:translate-x-[2px]">
-                            Download
-                        </button>
-                        <button id="queue-btn"
-                            class="h-14 brutal-border dark:border-white bg-transparent text-current font-bold text-lg uppercase tracking-wide hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-all shadow-brutal-sm dark:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] hover:shadow-none active:translate-y-[2px] active:translate-x-[2px]">
-                            Queue
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right: Queue Panel (DYNAMIC) -->
-            <div class="md:col-span-4 flex flex-col w-full h-full">
-                <div
-                    class="brutal-border dark:border-white bg-surface-light dark:bg-surface-dark flex-grow flex flex-col">
-                    <!-- Queue Header -->
-                    <div
-                        class="bg-black text-white p-4 border-b-2 border-black dark:border-white dark:bg-white dark:text-black">
-                        <h2 class="font-black uppercase text-lg tracking-tighter flex items-center justify-between">
-                            Queue
-                            <span id="queue-count-badge"
-                                class="bg-primary text-white text-xs px-2 py-0.5 rounded-sm font-bold"
-                                style="display: none;">0</span>
-                        </h2>
-                    </div>
-
-                    <!-- Queue Items Container (POPULATED BY JS) -->
-                    <div id="queue-container" class="p-4 flex flex-col gap-4 overflow-y-auto max-h-[500px]">
-                        <!-- Loading State -->
-                        <div class="flex items-center justify-center py-12">
-                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer
-        class="border-t-2 border-black dark:border-white py-6 bg-background-light dark:bg-background-dark text-center">
-        <p class="text-xs uppercase font-bold text-neutral-500">YMD Downloader v2.0 © 2024</p>
-    </footer>
-
-    <!-- Load Queue Manager Script -->
-    <script src="{% static 'js/queue-manager.js' %}"></script>
-    <script src="{% static 'js/youtube-downloader.js' %}"></script>
-    <script src="{% static 'js/toast-notifications.js' %}"></script>
-
-    <!-- Logout handler -->
-    <script>
-        document.getElementById('downloads-logout-btn')?.addEventListener('click', async function (e) {
-            e.preventDefault();
-            try {
-                await fetch('/api/accounts/logout/', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-                window.location.href = '/login/';
-            } catch (error) {
-                console.error('Logout failed:', error);
-                window.location.href = '/login/';
-            }
-        });
-    </script>
+<script src="{% static 'js/queue-manager.js' %}"></script>
+<script src="{% static 'js/youtube-downloader.js' %}"></script>
+<script src="{% static 'js/toast-notifications.js' %}"></script>
+<script>
+  document.getElementById('downloads-logout-btn')?.addEventListener('click', async function(e) {
+    e.preventDefault();
+    try { await fetch('/api/accounts/logout/', {method:'POST',credentials:'include'}); } catch {}
+    window.location.href = '/login/';
+  });
+</script>
 </body>
-
 </html>

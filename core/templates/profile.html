@@ -1,310 +1,234 @@
 {% load static %}
 <!DOCTYPE html>
-<html class="light" lang="en">
-
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>YMD Profile - User Account</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap"
-        rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
-        rel="stylesheet" />
-    <!-- Tailwind CSS (local build) -->
-    <link rel="stylesheet" href="{% static 'css/output.css' %}" />
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YDM — Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'css/output.css' %}"/>
+  <style>
+    :root{--bg:#0d0d0d;--bg-card:#161616;--bg-raised:#1e1e1e;--border:#2a2a2a;--border-hi:#3a3a3a;--red:#e5190e;--red-dim:rgba(229,25,14,.1);--text:#f0f0f0;--text-2:#8a8a8a;--text-3:#444;--font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{-webkit-font-smoothing:antialiased;}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;display:flex;flex-direction:column;}
+    a{color:inherit;text-decoration:none;}
+
+    /* NAV */
+    .nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;background:rgba(13,13,13,.92);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);}
+    .nav-logo{display:flex;align-items:center;gap:9px;font-size:16px;font-weight:700;letter-spacing:-.02em;}
+    .nav-logo .icon{width:20px;height:20px;background:var(--red);clip-path:polygon(15% 0%,100% 50%,15% 100%);}
+    .nav-right{display:flex;align-items:center;gap:4px;}
+    .nav-link{padding:6px 12px;border-radius:7px;font-size:13px;font-weight:500;color:var(--text-2);transition:color .15s,background .15s;}
+    .nav-link:hover{color:var(--text);background:var(--bg-raised);}
+    .user-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:7px;background:var(--bg-raised);border:1px solid var(--border);font-size:13px;font-weight:500;cursor:pointer;color:var(--text);position:relative;}
+    .user-btn:hover{border-color:var(--border-hi);}
+    .user-btn .material-symbols-outlined{font-size:16px;color:var(--text-2);}
+    .dropdown{position:absolute;right:0;top:calc(100% + 6px);background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:6px;min-width:140px;box-shadow:0 8px 32px rgba(0,0,0,.5);display:none;}
+    .user-btn:hover .dropdown,.user-btn:focus-within .dropdown{display:block;}
+    .dropdown a{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;font-size:13px;color:var(--text-2);transition:all .15s;}
+    .dropdown a:hover{background:var(--bg-raised);color:var(--text);}
+    .dropdown-divider{height:1px;background:var(--border);margin:4px 0;}
+
+    /* MAIN */
+    .main{flex:1;padding:32px 28px;max-width:680px;width:100%;margin:0 auto;}
+    .page-title{font-size:28px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;}
+    .page-sub{font-size:14px;color:var(--text-2);margin-bottom:28px;}
+
+    /* CARD */
+    .card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px;}
+    .card-head{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+    .card-head .material-symbols-outlined{font-size:18px;color:var(--text-2);}
+    .card-head-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-2);}
+    .card-body{padding:20px;}
+
+    /* PROFILE HEADER */
+    .profile-header{display:flex;align-items:center;gap:20px;padding:20px;}
+    .avatar{width:64px;height:64px;border-radius:12px;background:linear-gradient(135deg,var(--red),#9b1010);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0;}
+    .profile-email{font-size:16px;font-weight:600;margin-bottom:6px;}
+    .badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:100px;font-size:11px;font-weight:600;}
+    .badge-green{background:rgba(34,197,94,.12);color:#4ade80;}
+    .badge-yellow{background:rgba(234,179,8,.12);color:#facc15;}
+
+    /* INPUTS */
+    .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+    label{font-size:12px;font-weight:600;color:var(--text-2);text-transform:uppercase;letter-spacing:.05em;}
+    .input{width:100%;padding:11px 14px;border-radius:8px;background:var(--bg-raised);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s;}
+    .input::placeholder{color:var(--text-3);}
+    .input:focus{border-color:rgba(229,25,14,.5);box-shadow:0 0 0 3px rgba(229,25,14,.1);}
+
+    .btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:8px;font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .15s;}
+    .btn-primary{background:var(--red);color:#fff;}
+    .btn-primary:hover{background:#c9140a;}
+    .btn-full{width:100%;}
+    .btn-ghost{background:transparent;color:var(--text-2);border:1px solid var(--border);}
+    .btn-ghost:hover{background:var(--bg-raised);color:var(--text);}
+
+    .alert{padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;display:none;margin-bottom:16px;}
+    .alert.show{display:block;}
+    .alert-error{background:rgba(229,25,14,.1);border:1px solid rgba(229,25,14,.25);color:#f87171;}
+    .alert-success{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#4ade80;}
+
+    /* ACCOUNT ACTION ROW */
+    .action-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;}
+    .action-row+.action-row{border-top:1px solid var(--border);}
+    .action-info{display:flex;align-items:center;gap:12px;}
+    .action-info .material-symbols-outlined{font-size:20px;color:var(--text-2);}
+    .action-label{font-size:14px;font-weight:500;}
+    .action-desc{font-size:12px;color:var(--text-2);}
+
+    /* FOOTER */
+    .footer{padding:18px 28px;border-top:1px solid var(--border);font-size:11px;color:var(--text-3);font-family:var(--mono);text-align:center;}
+  </style>
 </head>
+<body>
 
-<body
-    class="bg-background-light dark:bg-background-dark font-display text-neutral-900 dark:text-neutral-50 transition-colors duration-200 min-h-screen flex flex-col">
-    <!-- Top Navigation -->
-    <header
-        class="sticky top-0 z-50 w-full bg-background-light dark:bg-background-dark border-b-2 border-black dark:border-white">
-        <div class="px-6 md:px-10 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <a class="text-2xl font-black tracking-tighter uppercase hover:text-primary transition-colors"
-                    href="{% url 'downloads' %}">YMD</a>
-            </div>
-            <div class="flex items-center gap-4 md:gap-8">
-                <nav class="hidden md:flex items-center gap-6">
-                    <a class="text-sm font-bold uppercase hover:underline decoration-2 underline-offset-4"
-                        href="{% url 'downloads' %}">Downloads</a>
-                    <a class="text-sm font-bold uppercase hover:underline decoration-2 underline-offset-4"
-                        href="{% url 'history' %}">History</a>
-                </nav>
-                <div class="relative group">
-                    <button
-                        class="flex items-center gap-2 px-3 py-1.5 border-2 border-black dark:border-white bg-transparent hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors rounded-sm">
-                        <span class="text-xs font-bold uppercase tracking-wider" id="user-display">User</span>
-                        <span class="material-symbols-outlined text-lg">arrow_drop_down</span>
-                    </button>
-                    <div
-                        class="absolute right-0 top-full mt-1 w-32 border-2 border-black dark:border-white bg-background-light dark:bg-background-dark hidden group-hover:block shadow-brutal dark:shadow-brutal-dark">
-                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white border-b-2 border-black dark:border-white text-primary"
-                            href="#">Profile</a>
-                        <a class="block px-4 py-2 text-xs font-bold uppercase hover:bg-primary hover:text-white"
-                            href="#" id="logout-btn">Logout</a>
-                    </div>
-                </div>
-            </div>
+<nav class="nav">
+  <a href="{% url 'downloads' %}" class="nav-logo">
+    <div class="icon"></div>YDM
+  </a>
+  <div class="nav-right">
+    <a href="{% url 'downloads' %}" class="nav-link">Downloads</a>
+    <a href="{% url 'history' %}" class="nav-link">History</a>
+    <div class="user-btn" tabindex="0">
+      <span class="material-symbols-outlined">person</span>
+      <span id="user-display">User</span>
+      <span class="material-symbols-outlined">expand_more</span>
+      <div class="dropdown">
+        <a href="#"><span class="material-symbols-outlined" style="font-size:15px;">manage_accounts</span>Profile</a>
+        <div class="dropdown-divider"></div>
+        <a href="#" id="logout-btn"><span class="material-symbols-outlined" style="font-size:15px;">logout</span>Sign out</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+  <h1 class="page-title">My profile</h1>
+  <p class="page-sub">Manage your account settings</p>
+
+  <!-- Profile Card -->
+  <div class="card">
+    <div class="profile-header">
+      <div class="avatar" id="user-initials">U</div>
+      <div>
+        <p class="profile-email" id="user-email">Loading…</p>
+        <span class="badge badge-yellow" id="verified-badge" style="display:none;">
+          <span class="material-symbols-outlined" style="font-size:12px;">verified</span>
+          Verified
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Change Password -->
+  <div class="card">
+    <div class="card-head">
+      <span class="material-symbols-outlined">lock</span>
+      <span class="card-head-label">Change password</span>
+    </div>
+    <div class="card-body">
+      <div class="alert alert-success" id="password-success">Password changed successfully!</div>
+      <div class="alert alert-error" id="password-error"></div>
+
+      <div class="form-group">
+        <label for="current-password">Current password</label>
+        <input type="password" id="current-password" class="input" placeholder="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label for="new-password">New password</label>
+        <input type="password" id="new-password" class="input" placeholder="••••••••"/>
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">Confirm new password</label>
+        <input type="password" id="confirm-password" class="input" placeholder="••••••••"/>
+      </div>
+      <button class="btn btn-primary btn-full" id="change-password-btn">
+        <span class="material-symbols-outlined" style="font-size:17px;">lock_reset</span>
+        Change password
+      </button>
+    </div>
+  </div>
+
+  <!-- Account Actions -->
+  <div class="card">
+    <div class="card-head">
+      <span class="material-symbols-outlined">manage_accounts</span>
+      <span class="card-head-label">Account actions</span>
+    </div>
+    <div class="card-body">
+      <div class="action-row">
+        <div class="action-info">
+          <span class="material-symbols-outlined">logout</span>
+          <div>
+            <p class="action-label">Sign out</p>
+            <p class="action-desc">Log out of your account</p>
+          </div>
         </div>
-    </header>
+        <button class="btn btn-ghost" id="logout-action-btn">Sign out</button>
+      </div>
+    </div>
+  </div>
+</main>
 
-    <!-- Main Content -->
-    <main class="flex-grow flex flex-col py-10 px-4 md:px-6 w-full max-w-3xl mx-auto">
-        <!-- Page Header -->
-        <div class="mb-8">
-            <h1 class="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-3">My Profile</h1>
-            <p class="text-neutral-500 dark:text-neutral-400 font-medium text-lg">Manage your account settings</p>
-        </div>
+<footer class="footer">YDM Downloader © 2025</footer>
 
-        <!-- Profile Header Card -->
-        <section
-            class="brutal-border dark:border-white bg-surface-light dark:bg-surface-dark shadow-brutal dark:shadow-brutal-dark mb-6">
-            <div class="p-8">
-                <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
-                    <!-- Avatar -->
-                    <div class="relative">
-                        <div
-                            class="w-24 h-24 brutal-border dark:border-white bg-gradient-to-br from-primary to-red-700 flex items-center justify-center overflow-hidden">
-                            <span class="text-4xl font-black text-white" id="user-initials">U</span>
-                        </div>
-                    </div>
+<script>
+  function getCookie(n){let v=null;if(document.cookie){document.cookie.split(';').forEach(c=>{c=c.trim();if(c.startsWith(n+'=')){v=decodeURIComponent(c.slice(n.length+1));}});}return v;}
+  const csrftoken=getCookie('csrftoken');
 
-                    <!-- User Info -->
-                    <div class="flex-grow">
-                        <p class="text-xl font-bold mb-1" id="user-email">Loading...</p>
-                        <div class="flex items-center gap-2">
-                            <span class="material-symbols-outlined text-green-500 text-lg" id="verified-icon"
-                                style="display: none;">verified</span>
-                            <span class="text-sm text-neutral-500 dark:text-neutral-400" id="verified-status">Checking
-                                status...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Account Security - Change Password -->
-        <section class="brutal-border dark:border-white bg-surface-light dark:bg-surface-dark mb-6">
-            <div
-                class="bg-neutral-100 dark:bg-neutral-800 p-4 border-b-2 border-black dark:border-white flex items-center gap-3">
-                <span class="material-symbols-outlined text-2xl">lock</span>
-                <h2 class="font-bold uppercase text-sm tracking-wider">Change Password</h2>
-            </div>
-            <div class="p-6 space-y-5">
-                <div id="password-success"
-                    class="hidden p-4 bg-green-100 dark:bg-green-900 brutal-border border-green-500 text-green-700 dark:text-green-300 font-bold text-sm">
-                    Password changed successfully!
-                </div>
-                <div id="password-error"
-                    class="hidden p-4 bg-red-100 dark:bg-red-900 brutal-border border-red-500 text-red-700 dark:text-red-300 font-bold text-sm">
-                    Error message here
-                </div>
-                <div>
-                    <label
-                        class="font-bold text-sm uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-2 block">Current
-                        Password</label>
-                    <input type="password" id="current-password" placeholder="••••••••"
-                        class="w-full px-4 py-3 brutal-border dark:border-white bg-transparent focus:ring-2 focus:ring-primary font-medium" />
-                </div>
-                <div>
-                    <label
-                        class="font-bold text-sm uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-2 block">New
-                        Password</label>
-                    <input type="password" id="new-password" placeholder="••••••••"
-                        class="w-full px-4 py-3 brutal-border dark:border-white bg-transparent focus:ring-2 focus:ring-primary font-medium" />
-                </div>
-                <div>
-                    <label
-                        class="font-bold text-sm uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-2 block">Confirm
-                        New Password</label>
-                    <input type="password" id="confirm-password" placeholder="••••••••"
-                        class="w-full px-4 py-3 brutal-border dark:border-white bg-transparent focus:ring-2 focus:ring-primary font-medium" />
-                </div>
-                <button id="change-password-btn"
-                    class="w-full h-12 brutal-border dark:border-white bg-black dark:bg-white text-white dark:text-black font-bold text-sm uppercase tracking-wide hover:bg-primary dark:hover:bg-primary hover:text-white dark:hover:text-white transition-all shadow-brutal-sm active:translate-y-[2px] active:translate-x-[2px] active:shadow-none">
-                    Change Password
-                </button>
-            </div>
-        </section>
-
-        <!-- Account Actions -->
-        <section class="brutal-border dark:border-white bg-surface-light dark:bg-surface-dark">
-            <div
-                class="bg-neutral-100 dark:bg-neutral-800 p-4 border-b-2 border-black dark:border-white flex items-center gap-3">
-                <span class="material-symbols-outlined text-2xl">manage_accounts</span>
-                <h2 class="font-bold uppercase text-sm tracking-wider">Account Actions</h2>
-            </div>
-            <div class="p-6 space-y-4">
-                <!-- Logout -->
-                <div class="flex items-center justify-between py-3">
-                    <div class="flex items-center gap-3">
-                        <span class="material-symbols-outlined text-xl">logout</span>
-                        <div>
-                            <p class="font-bold text-sm">Sign Out</p>
-                            <p class="text-xs text-neutral-500 dark:text-neutral-400">Log out of your account</p>
-                        </div>
-                    </div>
-                    <button id="logout-action-btn"
-                        class="px-6 py-2 brutal-border dark:border-white bg-transparent font-bold text-sm uppercase hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors shadow-brutal-sm">
-                        Logout
-                    </button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
-    <footer
-        class="border-t-2 border-black dark:border-white py-6 bg-background-light dark:bg-background-dark text-center mt-auto">
-        <p class="text-xs uppercase font-bold text-neutral-500">YMD Downloader © 2024</p>
-    </footer>
-
-    <script>
-        // Get CSRF token from cookie
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
+  async function loadUserInfo(){
+    try{
+      const r=await fetch('/api/accounts/auth/status/',{credentials:'include'});
+      if(r.ok){
+        const d=await r.json();
+        if(d.authenticated&&d.user){
+          const email=d.user.email;
+          document.getElementById('user-email').textContent=email;
+          document.getElementById('user-display').textContent=email.split('@')[0];
+          document.getElementById('user-initials').textContent=email.substring(0,2).toUpperCase();
+          if(d.user.is_verified){
+            const badge=document.getElementById('verified-badge');
+            badge.style.display='inline-flex';
+            badge.className='badge badge-green';
+            badge.innerHTML='<span class="material-symbols-outlined" style="font-size:12px;">verified</span>Verified';
+          }
         }
+      } else { window.location.href='/login/'; }
+    } catch(e){console.error(e);}
+  }
 
-        const csrftoken = getCookie('csrftoken');
+  document.getElementById('change-password-btn').addEventListener('click', async function(){
+    const cp=document.getElementById('current-password').value;
+    const np=document.getElementById('new-password').value;
+    const cfp=document.getElementById('confirm-password').value;
+    const sEl=document.getElementById('password-success');
+    const eEl=document.getElementById('password-error');
+    sEl.classList.remove('show'); eEl.classList.remove('show');
 
-        // Fetch user info on page load
-        async function loadUserInfo() {
-            try {
-                const response = await fetch('/api/accounts/auth/status/', {
-                    credentials: 'include'
-                });
+    if(!cp||!np||!cfp){eEl.textContent='All fields are required';eEl.classList.add('show');return;}
+    if(np!==cfp){eEl.textContent='New passwords do not match';eEl.classList.add('show');return;}
+    if(np.length<8){eEl.textContent='Password must be at least 8 characters';eEl.classList.add('show');return;}
 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.authenticated && data.user) {
-                        const email = data.user.email;
-                        document.getElementById('user-email').textContent = email;
-                        document.getElementById('user-display').textContent = email.split('@')[0];
+    try{
+      const r=await fetch('/api/accounts/change-password/',{method:'POST',headers:{'Content-Type':'application/json','X-CSRFToken':csrftoken},credentials:'include',body:JSON.stringify({current_password:cp,new_password:np})});
+      const d=await r.json();
+      if(r.ok){sEl.classList.add('show');document.getElementById('current-password').value='';document.getElementById('new-password').value='';document.getElementById('confirm-password').value='';}
+      else{eEl.textContent=d.error||d.errors?.new_password?.[0]||'Failed to change password';eEl.classList.add('show');}
+    } catch{eEl.textContent='Network error.';eEl.classList.add('show');}
+  });
 
-                        // Get initials from email
-                        const initials = email.substring(0, 2).toUpperCase();
-                        document.getElementById('user-initials').textContent = initials;
+  async function handleLogout(){
+    try{await fetch('/api/accounts/logout/',{method:'POST',headers:{'X-CSRFToken':csrftoken},credentials:'include'});}catch{}
+    window.location.href='/login/';
+  }
 
-                        // Show verification status
-                        if (data.user.is_verified) {
-                            document.getElementById('verified-icon').style.display = 'inline';
-                            document.getElementById('verified-status').textContent = 'Email verified';
-                        } else {
-                            document.getElementById('verified-status').textContent = 'Email not verified';
-                        }
-                    }
-                } else {
-                    // Redirect to login if not authenticated
-                    window.location.href = '/login/';
-                }
-            } catch (error) {
-                console.error('Failed to load user info:', error);
-            }
-        }
-
-        // Change password handler
-        document.getElementById('change-password-btn').addEventListener('click', async function () {
-            const currentPassword = document.getElementById('current-password').value;
-            const newPassword = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-
-            const successEl = document.getElementById('password-success');
-            const errorEl = document.getElementById('password-error');
-
-            // Hide previous messages
-            successEl.classList.add('hidden');
-            errorEl.classList.add('hidden');
-
-            // Validation
-            if (!currentPassword || !newPassword || !confirmPassword) {
-                errorEl.textContent = 'All fields are required';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            if (newPassword !== confirmPassword) {
-                errorEl.textContent = 'New passwords do not match';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            if (newPassword.length < 8) {
-                errorEl.textContent = 'Password must be at least 8 characters';
-                errorEl.classList.remove('hidden');
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/accounts/change-password/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrftoken
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        current_password: currentPassword,
-                        new_password: newPassword
-                    })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    successEl.classList.remove('hidden');
-                    // Clear form
-                    document.getElementById('current-password').value = '';
-                    document.getElementById('new-password').value = '';
-                    document.getElementById('confirm-password').value = '';
-                } else {
-                    errorEl.textContent = data.error || data.errors?.new_password?.[0] || 'Failed to change password';
-                    errorEl.classList.remove('hidden');
-                }
-            } catch (error) {
-                errorEl.textContent = 'Network error. Please try again.';
-                errorEl.classList.remove('hidden');
-            }
-        });
-
-        // Logout handler
-        async function handleLogout() {
-            try {
-                await fetch('/api/accounts/logout/', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrftoken
-                    },
-                    credentials: 'include'
-                });
-                window.location.href = '/login/';
-            } catch (error) {
-                console.error('Logout failed:', error);
-                window.location.href = '/login/';
-            }
-        }
-
-        document.getElementById('logout-btn').addEventListener('click', handleLogout);
-        document.getElementById('logout-action-btn').addEventListener('click', handleLogout);
-
-        // Initialize
-        loadUserInfo();
-    </script>
+  document.getElementById('logout-btn').addEventListener('click',handleLogout);
+  document.getElementById('logout-action-btn').addEventListener('click',handleLogout);
+  loadUserInfo();
+</script>
 </body>
-
 </html>
